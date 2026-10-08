@@ -14,23 +14,24 @@ const io = new Server(server, {
 });
 
 // Serve static files
+app.use(express.static(path.join(__dirname, '..')));
 app.use(express.static(path.join(__dirname, '..', 'client')));
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
-app.get('/lobby', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'lobby.html'));
+app.get(['/lobby', '/lobby.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'lobby.html'));
 });
 
-app.get('/game', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'game.html'));
+app.get(['/game', '/game.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'game.html'));
 });
 
-app.get('/guide', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'guide.html'));
+app.get(['/guide', '/guide.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'guide.html'));
 });
 
 // Initialize managers
