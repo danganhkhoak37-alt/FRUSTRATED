@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FRUSTRATED - Game</title>
+    <meta name="description" content="FRUSTRATED - Đang chơi! Phối hợp cùng đồng đội!">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { overflow: hidden; }
+        #gameCanvas { 
+            position: fixed; 
+            top: 50px; 
+            left: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- HUD -->
+    <div class="game-hud" id="gameHud">
+        <div class="hud-left">
+            <div class="hud-level" id="hudLevel">LEVEL 1</div>
+        </div>
+        <div class="hud-center">
+            <div class="hud-item">
+                <span class="hud-icon">❤️</span>
+                <span>TEAM:</span>
+                <span class="hud-value" id="hudAlive">0/0</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-icon">💀</span>
+                <span>DEATHS:</span>
+                <span class="hud-value" id="hudDeaths">0</span>
+            </div>
+        </div>
+        <div class="hud-right">
+            <div class="hud-item">
+                <span class="hud-icon">⏱️</span>
+                <span class="hud-value" id="hudTime">00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Sidebar -->
+    <div class="team-sidebar" id="teamSidebar">
+        <div class="team-sidebar-title">TEAM</div>
+        <div id="teamList">
+            <!-- Populated dynamically -->
+        </div>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Mobile Controls -->
+    <div class="mobile-controls" id="mobileControls">
+        <div class="ctrl-group">
+            <button class="mobile-btn" id="btnLeft" ontouchstart="mobileInput('left', true)" ontouchend="mobileInput('left', false)">◀</button>
+            <button class="mobile-btn" id="btnRight" ontouchstart="mobileInput('right', true)" ontouchend="mobileInput('right', false)">▶</button>
+        </div>
+        <div class="ctrl-group">
+            <button class="mobile-btn mobile-btn-jump" id="btnJump" ontouchstart="mobileInput('jump', true)" ontouchend="mobileInput('jump', false)">▲</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Chat -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header" onclick="toggleChat()">
+            <h3>💬 TEAM CHAT</h3>
+            <button class="chat-toggle" id="chatToggle">−</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Nhập tin nhắn..." maxlength="200">
+            <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+    </div>
+
+    <!-- Overlays (hidden by default) -->
+    <div class="overlay hidden" id="deathOverlay">
+        <div class="overlay-content">
+            <div class="overlay-title text-danger">💀 BẠN ĐÃ CHẾT!</div>
+            <p class="overlay-subtitle">Nhấn R hoặc nút bên dưới để hồi sinh</p>
+            <div class="overlay-buttons">
+                <button class="btn btn-primary btn-lg" onclick="respawn()">
+                    🔄 HỒI SINH
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay hidden" id="teamDefeatedOverlay">
+        <div class="overlay-content">
+            <div class="overlay-title text-danger" style="font-size: 1.5rem;">GAME OVER</div>
+            <p class="overlay-subtitle">CẢ ĐỘI ĐÃ THẤT BẠI!</p>
+            <div class="overlay-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="goDeaths">0</span>
+                    <span class="stat-label">Deaths</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="goScore">0</span>
+                    <span class="stat-label">Score</span>
+                </div>
+            </div>
+            <div class="overlay-buttons">
+                <button class="btn btn-primary" id="retryBtn" onclick="retryLevel()">🔄 CHƠI LẠI</button>
+                <button class="btn btn-secondary" onclick="backToMenu()">🏠 VỀ MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay hidden" id="levelCompleteOverlay">
+        <div class="overlay-content">
+            <div class="overlay-title text-success" style="font-size: 1.3rem;">🏆 LEVEL COMPLETE!</div>
+            <p class="overlay-subtitle">TEAM WIN!</p>
+            <div class="overlay-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="lcScore">0</span>
+                    <span class="stat-label">Score</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="lcTime">00:00</span>
+                    <span class="stat-label">Time</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="lcDeaths">0</span>
+                    <span class="stat-label">Deaths</span>
+                </div>
+            </div>
+            <div class="overlay-buttons">
+                <button class="btn btn-success" id="nextLevelBtn" onclick="nextLevel()">➡️ LEVEL TIẾP</button>
+                <button class="btn btn-secondary" onclick="backToMenu()">🏠 VỀ MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay hidden" id="gameCompleteOverlay">
+        <div class="overlay-content">
+            <div class="overlay-title" style="font-size: 1.3rem; background: var(--gradient-rage); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                🎉 GAME COMPLETE!
+            </div>
+            <p class="overlay-subtitle">Bạn đã vượt qua FRUSTRATED!</p>
+            <p class="text-muted mt-2" style="font-size: 0.9rem;">Hoặc... FRUSTRATED đã vượt qua bạn? 😏</p>
+            <div class="overlay-buttons mt-3">
+                <button class="btn btn-primary" onclick="backToMenu()">🏠 VỀ MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/levels.js"></script>
+    <script src="/js/player.js"></script>
+    <script src="/js/obstacle.js"></script>
+    <script src="/js/game.js"></script>
+</body>
+</html>

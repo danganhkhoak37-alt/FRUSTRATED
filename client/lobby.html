@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRUSTRATED - Lobby</title>
+    <meta name="description" content="FRUSTRATED Lobby - Chờ đồng đội và sẵn sàng chiến đấu!">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+        <h1 class="game-title" style="font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 10px;">FRUSTRATED</h1>
+
+        <div class="card card-wide" id="lobbyCard">
+            <!-- Room Code -->
+            <div class="room-code-display" id="roomCodeDisplay" onclick="copyRoomCode()">
+                <span id="roomCode">------</span>
+                <span class="copy-hint">Click để sao chép mã phòng</span>
+            </div>
+
+            <p class="text-center text-muted mb-2" id="roomName" style="font-size: 0.9rem;"></p>
+
+            <!-- Player List -->
+            <ul class="player-list" id="playerList">
+                <!-- Populated dynamically -->
+            </ul>
+
+            <!-- Player Count -->
+            <p class="player-count">
+                <span id="playerCount">0</span> / <span id="maxPlayers">6</span> PLAYERS
+            </p>
+
+            <div class="divider"></div>
+
+            <!-- Actions -->
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-success btn-lg" id="readyBtn" onclick="toggleReady()">
+                    ✋ SẴN SÀNG
+                </button>
+                <button class="btn btn-primary btn-lg hidden" id="startBtn" onclick="startGame()">
+                    🚀 BẮT ĐẦU
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="leaveRoom()">
+                    🚪 Rời phòng
+                </button>
+            </div>
+
+            <p class="text-center text-muted mt-2" id="lobbyStatus" style="font-size: 0.8rem;"></p>
+        </div>
+
+        <!-- Chat in lobby -->
+        <div class="card card-wide mt-3" style="max-height: 300px;">
+            <h3 style="font-family: 'Press Start 2P', cursive; font-size: 0.65rem; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">💬 TEAM CHAT</h3>
+            <div id="lobbyChatMessages" style="max-height: 150px; overflow-y: auto; margin-bottom: 12px;">
+                <p class="text-muted" style="font-size: 0.85rem; font-style: italic;">Chào mừng đến phòng chờ! Nói chuyện với đồng đội...</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" class="form-input" id="lobbyChatInput" placeholder="Nhập tin nhắn..." style="margin-bottom: 0;" maxlength="200">
+                <button class="btn btn-primary btn-sm" onclick="sendLobbyChat()">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/lobby.js"></script>
+</body>
+</html>

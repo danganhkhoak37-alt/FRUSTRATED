@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRUSTRATED - Can You Keep Your Team Together?</title>
+    <meta name="description" content="FRUSTRATED - 2D Multiplayer Co-op Obstacle Course Game. Phối hợp cùng đồng đội vượt qua chướng ngại vật!">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <div class="bg-grid"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container" id="app">
+        <!-- MAIN MENU -->
+        <div id="mainMenu">
+            <h1 class="game-title">FRUSTRATED</h1>
+            <p class="game-subtitle">Can You Keep Your Team Together?</p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary btn-lg btn-block" onclick="showQuickPlay()">
+                    <span class="btn-icon">⚡</span> CHƠI NGAY
+                </button>
+                <button class="btn btn-secondary btn-lg btn-block" onclick="showCreateRoom()">
+                    <span class="btn-icon">🏠</span> TẠO PHÒNG
+                </button>
+                <button class="btn btn-secondary btn-lg btn-block" onclick="showJoinRoom()">
+                    <span class="btn-icon">🚪</span> THAM GIA PHÒNG
+                </button>
+                <button class="btn btn-secondary btn-lg btn-block" onclick="window.location.href='/guide'">
+                    <span class="btn-icon">📖</span> HƯỚNG DẪN
+                </button>
+            </div>
+        </div>
+
+        <!-- USERNAME PROMPT (Quick Play) -->
+        <div id="quickPlayView" class="hidden">
+            <h1 class="game-title" style="font-size: 2rem; margin-bottom: 30px;">FRUSTRATED</h1>
+            <div class="card">
+                <h2 class="card-title">⚡ CHƠI NGAY</h2>
+                <div class="form-group">
+                    <label class="form-label">Tên người chơi</label>
+                    <input type="text" class="form-input" id="qpUsername" placeholder="Nhập tên..." maxlength="15" autocomplete="off">
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" onclick="quickPlay()">
+                    <span class="btn-icon">🎮</span> VÀO GAME
+                </button>
+                <button class="btn btn-secondary btn-block mt-2" onclick="showMainMenu()">← Quay lại</button>
+            </div>
+        </div>
+
+        <!-- CREATE ROOM -->
+        <div id="createRoomView" class="hidden">
+            <h1 class="game-title" style="font-size: 2rem; margin-bottom: 30px;">FRUSTRATED</h1>
+            <div class="card">
+                <h2 class="card-title">🏠 TẠO PHÒNG</h2>
+                <div class="form-group">
+                    <label class="form-label">Tên người chơi</label>
+                    <input type="text" class="form-input" id="crUsername" placeholder="Nhập tên..." maxlength="15" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên phòng</label>
+                    <input type="text" class="form-input" id="crRoomName" placeholder="VD: Phòng của Khoa" maxlength="30" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu (tùy chọn)</label>
+                    <input type="password" class="form-input" id="crPassword" placeholder="Để trống nếu không cần" autocomplete="off">
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" onclick="createRoom()">
+                    <span class="btn-icon">✨</span> TẠO PHÒNG
+                </button>
+                <button class="btn btn-secondary btn-block mt-2" onclick="showMainMenu()">← Quay lại</button>
+            </div>
+        </div>
+
+        <!-- JOIN ROOM -->
+        <div id="joinRoomView" class="hidden">
+            <h1 class="game-title" style="font-size: 2rem; margin-bottom: 30px;">FRUSTRATED</h1>
+            <div class="card">
+                <h2 class="card-title">🚪 THAM GIA PHÒNG</h2>
+                <div class="form-group">
+                    <label class="form-label">Tên người chơi</label>
+                    <input type="text" class="form-input" id="jrUsername" placeholder="Nhập tên..." maxlength="15" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mã phòng</label>
+                    <input type="text" class="form-input form-input-code" id="jrRoomCode" placeholder="ABC123" maxlength="6" autocomplete="off">
+                </div>
+                <div class="form-group" id="jrPasswordGroup" style="display: none;">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-input" id="jrPassword" placeholder="Nhập mật khẩu phòng" autocomplete="off">
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" onclick="joinRoom()">
+                    <span class="btn-icon">🎯</span> THAM GIA
+                </button>
+                <button class="btn btn-secondary btn-block mt-2" onclick="showMainMenu()">← Quay lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
